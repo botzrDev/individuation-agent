@@ -2,7 +2,7 @@
 
 Reference implementation of the four-stage individuation cycle (Persona Recognition, Shadow Confrontation, Anima/Animus Integration, Self-Reorganization) as a LangGraph graph over an append-only atom store. Every state change is a new atom with an evidence tier; nothing is edited in place. The package exists so the architecture paper describes a system that runs, not a hypothesis.
 
-**Status: released 2026-11-11 (v0.1.0).** This is the reference implementation described in the paper *Reflective Identity Optimization: A Cognitive Architecture for Persistent Agent Identity over Append-Only Memory* (Zenodo DOI to follow). The implementation passed an independent cross-model review by a non-Claude model on 2026-11-08; see `ai-use-log.md`.
+**Status: released 2026-11-11 (v0.1.0).** This is the reference implementation described in the paper *Reflective Identity Optimization: A Cognitive Architecture for Persistent Agent Identity over Append-Only Memory* (Zenodo, [doi:10.5281/zenodo.24145069](https://doi.org/10.5281/zenodo.24145069)). The implementation passed an independent cross-model review by a non-Claude model on 2026-11-08; see `ai-use-log.md`.
 
 ## Install
 
