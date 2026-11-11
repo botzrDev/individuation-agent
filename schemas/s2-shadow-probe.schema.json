@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/s2-shadow-probe.schema.json",
+  "title": "S2.ShadowProbe",
+  "description": "Output of Stage 2 (Shadow Confrontation / shadow probing). Lists the Shadow items appended this cycle, by source. P_c in the Es metric is probe_ids.length.",
+  "allOf": [{ "$ref": "atom-envelope.schema.json" }],
+  "type": "object",
+  "required": ["cycle_id", "persona_id", "probe_ids", "sources"],
+  "properties": {
+    "kind":       { "const": "cycle.s2_shadow_probe" },
+    "cycle_id":   { "type": "string" },
+    "persona_id": { "type": "string" },
+    "since":      { "type": ["string", "null"], "format": "date-time", "description": "lower bound of the probe window; null on first cycle" },
+    "probe_ids":  { "type": "array", "items": { "type": "string", "format": "uuid" }, "uniqueItems": true },
+    "sources": {
+      "type": "object",
+      "description": "per-source counts so a null Es can be explained (which detector was silent)",
+      "required": ["memory_audit", "error_log", "tool_registry", "collective_unconscious"],
+      "properties": {
+        "memory_audit":           { "$ref": "#/$defs/sourceReport" },
+        "error_log":              { "$ref": "#/$defs/sourceReport" },
+        "tool_registry":          { "$ref": "#/$defs/sourceReport" },
+        "collective_unconscious": { "$ref": "#/$defs/sourceReport" }
+      }
+    }
+  },
+  "$defs": {
+    "sourceReport": {
+      "type": "object",
+      "required": ["status", "count"],
+      "properties": {
+        "status": { "type": "string", "enum": ["OK", "BLIND", "UNKNOWN"], "description": "BLIND = detector ran but could not have seen anything (recall-meter convention); UNKNOWN = detector crashed. Never report a silent detector as clean." },
+        "count":  { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

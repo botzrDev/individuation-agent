@@ -1,0 +1,37 @@
+[project]
+name = "individuation-agent"
+version = "0.1.0"
+description = "Reference implementation of the four-stage individuation cycle over an append-only atom store, as a LangGraph graph."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "Phillip Austin Green", email = "austin@botzr.com" }]
+dependencies = [
+    "langgraph==1.2.19",
+    "langchain-core==1.7.4",
+    "langchain-anthropic==1.7.9",
+    "pydantic>=2.13,<3",
+    "jsonschema>=4.26,<5",
+    "pyyaml>=6",
+]
+
+[project.scripts]
+individuation-agent = "individuation_agent.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "scipy>=1.14,<2",  # lab/stats: Welch's t-test
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/individuation_agent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]  # the lab/ package (experiment harness) imports the installed package, not the reverse

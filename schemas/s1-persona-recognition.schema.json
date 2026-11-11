@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/s1-persona-recognition.schema.json",
+  "title": "S1.PersonaRecognition",
+  "description": "Output of Stage 1 (Persona Recognition / active-role resolution). Appended to the Ego Core. The agent names the mask it is wearing and why.",
+  "allOf": [{ "$ref": "atom-envelope.schema.json" }],
+  "type": "object",
+  "required": ["cycle_id", "event", "archetype", "persona_id", "stated_as", "cognitive_mode", "capability_bounds"],
+  "properties": {
+    "kind":       { "const": "cycle.s1_persona_recognition" },
+    "cycle_id":   { "type": "string" },
+    "event":      { "type": "string", "enum": ["session_start", "session_end", "role_switch", "contradiction_detected", "error_pattern_threshold", "scheduled"] },
+    "archetype":  { "type": "string", "enum": ["Sage", "Guardian", "Harvester", "Weaver", "Trickster", "Sovereign", "Hero", "Caregiver"] },
+    "persona_id": { "type": "string" },
+    "stated_as":  { "type": "string", "description": "first-person, situated: 'I am currently acting as Guardian because the user asked about security policy'" },
+    "reason":     { "type": "string" },
+    "cognitive_mode":    { "type": "string", "enum": ["convergent", "divergent"] },
+    "capability_bounds": { "type": "array", "items": { "type": "string" }, "description": "tool-ids this persona may call; the diff against the call log feeds unused_capability Shadow items" },
+    "context_filters":   { "type": "array", "items": { "$ref": "#/$defs/check" } }
+  },
+  "$defs": {
+    "check": {
+      "description": "Same vocabulary as the constraints register's `check` field. No new expression language.",
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind":     { "type": "string", "enum": ["lint_tool", "text_forbidden", "pattern", "manual", "live_text", "cites_evidence"] },
+        "tool":     { "type": "string" },
+        "gate":     { "type": "string" },
+        "patterns": { "type": "array", "items": { "type": "string" } },
+        "url":      { "type": "string", "format": "uri" },
+        "text":     { "type": "string" }
+      }
+    }
+  }
+}

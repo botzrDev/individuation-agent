@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/atom-envelope.schema.json",
+  "title": "AtomEnvelope",
+  "description": "Common envelope on every atom in the append-only store. Field names follow the substrate's constraints register (stated_*) and obligations register (made_*); see 00-substrate-snapshot.md. Nothing is mutated in place: a change is a new atom whose `supersedes` points at the old one.",
+  "type": "object",
+  "required": ["id", "kind", "made_on", "made_by", "made_in", "tier", "status"],
+  "properties": {
+    "id":         { "type": "string", "format": "uuid" },
+    "kind":       { "type": "string", "pattern": "^(persona|ego|shadow|anima|self|collective|archetype|cycle)\\.[a-z0-9_]+$" },
+    "made_on":    { "type": "string", "format": "date-time" },
+    "made_by":    { "type": "string", "description": "agent-id or human-id; never inferred from identity (evidence rule 5)" },
+    "made_in":    { "type": "string", "description": "session-id" },
+    "about":      { "type": "string", "description": "the far-side artifact this atom describes: path, URL or issue id" },
+    "links":      { "type": "array", "items": { "type": "string", "format": "uuid" }, "default": [] },
+    "terminal":   { "type": "boolean", "default": false, "description": "true when the atom deliberately links to nothing (cross-referenced property)" },
+    "supersedes": { "type": ["string", "null"], "format": "uuid" },
+    "tier":       { "type": "string", "enum": ["VERIFIED", "REPORTED", "INFERRED", "UNKNOWN"] },
+    "status":     { "type": "string", "enum": ["live", "superseded", "retired", "VIOLATED"] },
+    "last_read":  { "type": ["string", "null"], "format": "date-time", "description": "set by the recall meter on a CONSULT by a non-author session" },
+    "expires":    { "type": ["string", "null"], "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "links": { "maxItems": 0 } } },
+      "then": { "properties": { "terminal": { "const": true } } }
+    }
+  ],
+  "additionalProperties": true
+}

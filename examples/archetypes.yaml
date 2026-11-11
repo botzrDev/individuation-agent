@@ -1,0 +1,8 @@
+# Archetype Table for the demo. Activation conditions use the constraints-register check vocabulary.
+entries:
+  - archetype: Guardian
+    activation_conditions:
+      - kind: pattern
+        patterns: [security, policy]
+    default_cognitive_mode: convergent
+default: Sage

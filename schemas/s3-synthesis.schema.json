@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/s3-synthesis.schema.json",
+  "title": "S3.Synthesis",
+  "description": "Output of Stage 3 (Anima/Animus Integration / complementary synthesis). Proposals from the complementary-mode pass over the open Shadow items. Nothing here is applied; S4 decides.",
+  "allOf": [{ "$ref": "atom-envelope.schema.json" }],
+  "type": "object",
+  "required": ["cycle_id", "mode", "complement_of", "proposals"],
+  "properties": {
+    "kind":          { "const": "cycle.s3_synthesis" },
+    "cycle_id":      { "type": "string" },
+    "mode":          { "type": "string", "enum": ["convergent", "divergent"] },
+    "complement_of": { "type": "string", "description": "persona-id whose mode this pass complements" },
+    "model_call":    {
+      "type": "object",
+      "description": "recorded so the paper can state that S3 is a second call on the same base model, not a second model",
+      "properties": {
+        "base_model_id":      { "type": "string" },
+        "base_model_version": { "type": "string" },
+        "distinct_model":     { "type": "boolean", "default": false }
+      }
+    },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "action", "target", "rationale", "tier"],
+        "properties": {
+          "id":        { "type": "string", "format": "uuid" },
+          "action":    { "type": "string", "enum": ["resolve", "adopt", "revise", "defer"] },
+          "target":    { "type": "string", "format": "uuid", "description": "probe_id of the Shadow item" },
+          "rationale": { "type": "string" },
+          "tier":      { "type": "string", "enum": ["VERIFIED", "REPORTED", "INFERRED", "UNKNOWN"], "description": "inherits the weakest tier of the inputs it synthesizes (evidence rule 6)" },
+          "new_atom":  { "type": ["object", "null"], "description": "the atom that would be appended if accepted; validated against the target component's schema at S4" }
+        }
+      }
+    }
+  }
+}

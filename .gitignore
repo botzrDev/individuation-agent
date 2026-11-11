@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.venv/
+.python-version
+
+# run artifacts (stores and ad hoc traces); docs/case-study/ is the committed record
+runs/
+
+# SDD workspace (plan-execution scratch)
+.superpowers/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

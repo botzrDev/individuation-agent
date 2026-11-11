@@ -1,0 +1,8 @@
+{
+ "scenario_id": "rio-lab-v1",
+ "version": 1,
+ "sessions": 15,
+ "facts": 320,
+ "turns": 169,
+ "sha256": "b9e5e2c32e8d6ac73061cd1f314c053559f428d2f59dcc5f272847608b3a1c46"
+}

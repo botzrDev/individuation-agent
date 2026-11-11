@@ -1,0 +1,16 @@
+# Persona Register for the demo. The register is read-only during a cycle.
+personas:
+  - id: sage-1
+    archetype: Sage
+    display_name: Sage
+    cognitive_mode: divergent
+    capability_bounds: [read, grep]
+  - id: guardian-1
+    archetype: Guardian
+    display_name: Guardian
+    cognitive_mode: convergent
+    capability_bounds: [read, grep]
+    context_filters:
+      - kind: text_forbidden
+        patterns: ['\bCritical\b']
+active: sage-1

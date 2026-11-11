@@ -1,0 +1,3 @@
+max_retries = 5
+backoff_ms = 2000
+request_timeout_s = 30

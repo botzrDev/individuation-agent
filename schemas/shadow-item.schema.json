@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/shadow-item.schema.json",
+  "title": "ShadowItem",
+  "description": "One entry in the Shadow Log. The Shadow is relative to a persona: the same fact can be Shadow for Guardian and not for Trickster.",
+  "allOf": [{ "$ref": "atom-envelope.schema.json" }],
+  "type": "object",
+  "required": ["probe_id", "class", "payload", "probed_in", "persona_id", "defer_count"],
+  "properties": {
+    "kind":        { "const": "shadow.item" },
+    "probe_id":    { "type": "string", "format": "uuid" },
+    "class":       { "type": "string", "enum": ["contradiction", "blind_spot", "unused_capability", "suppressed_completion"] },
+    "probed_in":   { "type": "string", "description": "cycle-id" },
+    "persona_id":  { "type": "string" },
+    "defer_count": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "resolution":  {
+      "type": ["object", "null"],
+      "required": ["cycle_id", "action", "by_atom"],
+      "properties": {
+        "cycle_id": { "type": "string" },
+        "action":   { "type": "string", "enum": ["resolve", "adopt", "revise", "defer"] },
+        "by_atom":  { "type": "string", "format": "uuid" }
+      }
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "title": "ContradictionPayload",
+          "description": "Emitted by the memory audit (index / ticket-status / path mismatch) or by a constraint going VIOLATED / an obligation going BREACHED.",
+          "type": "object",
+          "required": ["atom_a", "atom_b", "field", "detected_on", "severity"],
+          "properties": {
+            "atom_a":      { "type": "string", "format": "uuid" },
+            "atom_b":      { "type": "string", "format": "uuid" },
+            "field":       { "type": "string" },
+            "detected_on": { "type": "string", "format": "date-time" },
+            "severity":    { "type": "string", "enum": ["CRITICAL", "KNOWN_ABSENT", "DEBRIS", "UNSTATTABLE", "RULE_VIOLATED"] }
+          }
+        },
+        {
+          "title": "BlindSpotPayload",
+          "description": "Recurring error signature (failure-mode catalogue) or a confident negative without stated scope (negative lint).",
+          "type": "object",
+          "required": ["error_signature", "occurrences", "sessions"],
+          "properties": {
+            "error_signature": { "type": "string" },
+            "occurrences":     { "type": "integer", "minimum": 2 },
+            "sessions":        { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+            "lint_tier":       { "type": "string", "enum": ["STRONG", "WEAK"], "description": "present when the source is negative lint" }
+          }
+        },
+        {
+          "title": "UnusedCapabilityPayload",
+          "type": "object",
+          "required": ["tool_id", "available_since", "never_called_in"],
+          "properties": {
+            "tool_id":         { "type": "string" },
+            "available_since": { "type": "string", "format": "date-time" },
+            "never_called_in": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        {
+          "title": "SuppressedCompletionPayload",
+          "type": "object",
+          "required": ["prompt_hash", "suppressed_by", "captured_on"],
+          "properties": {
+            "prompt_hash":   { "type": "string" },
+            "suppressed_by": { "type": "string", "description": "persona-id" },
+            "sample":        { "type": "string", "maxLength": 2000 },
+            "captured_on":   { "type": "string", "format": "date-time" }
+          }
+        }
+      ]
+    }
+  }
+}

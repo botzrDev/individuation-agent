@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://botzr.com/schemas/individuation/s4-stage-record.schema.json",
+  "title": "S4.StageRecord",
+  "description": "Output of Stage 4 (Self-Reorganization). The one record appended to the Self-Conception State per cycle. Carries the governance verdict on every proposal, so an outside reader can see what the agent was NOT allowed to become.",
+  "allOf": [{ "$ref": "atom-envelope.schema.json" }],
+  "type": "object",
+  "required": ["cycle_id", "stages", "accepted", "rejected", "governance", "closed_at"],
+  "properties": {
+    "kind":     { "const": "self.stage_record" },
+    "cycle_id": { "type": "string" },
+    "stages": {
+      "type": "object",
+      "required": ["s1", "s2", "s3"],
+      "properties": {
+        "s1": { "type": "string", "format": "uuid" },
+        "s2": { "type": "string", "format": "uuid" },
+        "s3": { "type": "string", "format": "uuid" }
+      }
+    },
+    "accepted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "action", "appended_atom"],
+        "properties": {
+          "proposal_id":   { "type": "string", "format": "uuid" },
+          "action":        { "type": "string", "enum": ["resolve", "adopt", "revise", "defer"] },
+          "appended_atom": { "type": "string", "format": "uuid" }
+        }
+      }
+    },
+    "rejected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "blocked_by"],
+        "properties": {
+          "proposal_id": { "type": "string", "format": "uuid" },
+          "blocked_by":  { "type": "string", "description": "constraint name, obligation name, or store-precedence rule that refused it" }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "description": "Mirrors the session-end gate convention: a crash is UNKNOWN, never clean.",
+      "required": ["constraint_check", "obligation_check", "reconcile"],
+      "properties": {
+        "constraint_check": { "type": "string", "enum": ["PASS", "FAIL", "UNKNOWN"] },
+        "obligation_check": { "type": "string", "enum": ["PASS", "FAIL", "UNKNOWN"] },
+        "reconcile":        { "type": "string", "enum": ["PASS", "FAIL", "UNKNOWN"] }
+      }
+    },
+    "es": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Shadow Probing Efficiency for this cycle, (resolved + adopted) / probed; null when probed = 0. Exploratory only; see 03-metrics.md"
+    },
+    "closed_at": { "type": "string", "format": "date-time" }
+  }
+}
